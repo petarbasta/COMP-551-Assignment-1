@@ -16,3 +16,8 @@ wineDatasets = CrossValidate.split(wineDataset, 5)
 # GradientDescent class should have function "fit" with training set and some gradient descent parameter alpha as inputs
 # GradientDescent class also has a predict and evaluate_acc function (see assignment pdf)
 averageErrorWine = CrossValidate.kFoldCrossValidation(wineDatasets, fit, predict, evaluate_acc)
+
+tumourDataset = Preprocess.preprocessTumour()
+tumourDatasets = CrossValidate.split(tumourDataset, 5)
+
+averageErrorTumour = CrossValidate.kFoldCrossValidation(tumourDatasets, fit, predict, evaluate_acc)
