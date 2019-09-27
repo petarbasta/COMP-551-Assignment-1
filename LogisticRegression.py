@@ -3,6 +3,7 @@ import CrossValidate
 import matplotlib
 import numpy as np
 import random
+import time
 
 
 class LogisticRegression:
@@ -15,6 +16,7 @@ class LogisticRegression:
         for i in range(0, len(self.wine_data[0])):
             self.wine_weights.append(0.0)
         self.wine_weights = np.array(self.wine_weights, dtype=float)
+        # self.wine_data_interact =
 
         self.cancer_data = Preprocess.preprocessTumour()
         self.cancer_vars = ['']
@@ -28,6 +30,7 @@ class LogisticRegression:
 
     @staticmethod
     def sigmoid(a):  # Sigmoid function from slide 17
+        # print(1 / (1 + np.exp(-a)))
         return 1 / (1 + np.exp(-a))
 
     def loss_fn(self):
@@ -40,7 +43,7 @@ class LogisticRegression:
 
     @staticmethod
     def learn_rate(iterations, data_length):
-        return 1 / (data_length*data_length*1000000)
+        return 1/100_000_000_000_000
 
     # @staticmethod
     # def train(data, weights, iterations):
@@ -126,6 +129,7 @@ def k_fold_cancer(lr):
     data_set = lr.cancer_data
     k = 5
     learn_l, test_l = get_folds(lr, data_set, k)
+    start_t = time.time_ns()
     for i in range(k):
         # each iteration uses a different set of data
         learn = np.asarray(learn_l[i])
@@ -133,11 +137,16 @@ def k_fold_cancer(lr):
         lr.cancer_weights = LogisticRegression.fit(lr.cancer_weights, learn, LogisticRegression.learn_rate)
         y_act, y_pred = create_y_lists(test, lr.cancer_weights)
         print('CANCER: {}'.format(evaluate_acc(y_act, y_pred)))
+    end_t = time.time_ns()
+    total = end_t - start_t
+    total = (total/5)/1_000_000_000
+    print('Average Time CANCER: {}'.format(total))
 
 def k_fold_wine(lr):
     data_set = lr.wine_data
     k = 5
     learn_l, test_l = get_folds(lr, data_set, k)
+    start_t = time.time_ns()
     for i in range(k):
         # each iteration uses a different set of data
         learn = np.asarray(learn_l[i])
@@ -145,7 +154,10 @@ def k_fold_wine(lr):
         lr.wine_weights = LogisticRegression.fit(lr.wine_weights, learn, LogisticRegression.learn_rate)
         y_act, y_pred = create_y_lists(test, lr.wine_weights)
         print('WINE: {}'.format(evaluate_acc(y_act, y_pred)))
-
+    end_t = time.time_ns()
+    total = end_t - start_t
+    total = (total/5)/1_000_000_000
+    print('Average Time WINE: {}'.format(total))
 
 
 def main():
