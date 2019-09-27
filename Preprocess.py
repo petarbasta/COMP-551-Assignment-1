@@ -1,8 +1,8 @@
 import numpy as np
 
 # import data from file
-def loadDataSet(fileName):
-    return np.genfromtxt(fileName, delimiter=';')
+def loadDataSet(fileName, delimiter):
+    return np.genfromtxt(fileName, delimiter=delimiter)
 
 # sets last column to 0 or 1 based on threshold
 def binarizeData(dataset, threshold):
@@ -27,9 +27,19 @@ def standardizeData(dataset):
 
 # converts data to workable form
 def preprocessWine():
-    wineDataset = loadDataSet('winequality-red.csv')
+    wineDataset = loadDataSet('winequality-red.csv', ';')
     standardizeData(wineDataset)
     binarizeData(wineDataset, 5)
     
     return wineDataset
-    
+
+def preprocessTumour():
+    tumourDataset = loadDataSet('breast-cancer-wisconsin.data', ',')
+    # remove first ID column
+    tumourDataset = tumourDataset[:,1:]
+    # removes all rows with missing data
+    tumourDataset = tumourDataset[~np.isnan(tumourDataset).any(axis=1)]
+    standardizeData(tumourDataset)
+    binarizeData(tumourDataset, 3)
+
+    return tumourDataset    
