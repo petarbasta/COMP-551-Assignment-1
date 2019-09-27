@@ -35,8 +35,10 @@ def preprocessWine():
 
 def preprocessTumour():
     tumourDataset = loadDataSet('breast-cancer-wisconsin.data', ',')
-    #remove first ID column
+    # remove first ID column
     tumourDataset = tumourDataset[:,1:]
+    # removes all rows with missing data
+    tumourDataset = tumourDataset[~np.isnan(tumourDataset).any(axis=1)]
     standardizeData(tumourDataset)
     binarizeData(tumourDataset, 3)
 
