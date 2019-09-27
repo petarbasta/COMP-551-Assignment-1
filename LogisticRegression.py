@@ -41,12 +41,12 @@ class LogisticRegression:
     def learn_rate(iterations):
         return 1 / (iterations * iterations)
 
-    @staticmethod
-    def train(data, weights, iterations):
-        for x in data:
-            for ct in range(iterations):
-                weights = LogisticRegression.fit(weights, x[:-1], x[-1], LogisticRegression.learn_rate)
-        return weights
+    # @staticmethod
+    # def train(data, weights, iterations):
+    #     for x in data:
+    #         for ct in range(iterations):
+    #             weights = LogisticRegression.fit(weights, x[:-1], x[-1], LogisticRegression.learn_rate)
+    #     return weights
 
     @staticmethod
     def linear_fn_eval(w, x):
@@ -71,10 +71,11 @@ class LogisticRegression:
         to_add = 0
         w_k1 = np.copy(w)
         for count in range(len(x_in)):
-            w_k1[count] = w[count] \
-                          + learning_rate(count) * x_in[count] * (
-                                  indicator - LogisticRegression.sigmoid(LogisticRegression.linear_fn_eval(w, x_in))
-                          )  # Update Rule
+            for wt_count in range(len(w)):
+                w_k1[count] = w[count] \
+                              + learning_rate(count) * x_in[count][wt_count] * (
+                                      indicator - LogisticRegression.sigmoid(LogisticRegression.linear_fn_eval(w, x_in))
+                              )  # Update Rule
         return w_k1
 
     @staticmethod
@@ -104,7 +105,7 @@ def main():
     lr = LogisticRegression()
     y_act, y_pred = create_y_lists(lr.cancer_data, lr.cancer_weights)
     print(evaluate_acc(y_act, y_pred))
-    lr.cancer_weights = LogisticRegression.train(lr.cancer_data, lr.cancer_weights, 50)
+    lr.cancer_weights = LogisticRegression.fit(lr.cancer_weights, lr.cancer_data, LogisticRegression.learn_rate, )
     y_act, y_pred = create_y_lists(lr.cancer_data, lr.cancer_weights)
     print(evaluate_acc(y_act, y_pred))
 
