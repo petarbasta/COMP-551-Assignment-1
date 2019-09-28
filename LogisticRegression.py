@@ -10,13 +10,15 @@ class LogisticRegression:
 
     def __init__(self):
         self.wine_data = Preprocess.preprocessWine()
+        self.wine_data_interact = LogisticRegression.interact(self.wine_data)
+        # self.wine_data = self.wine_data_interact
         self.wine_vars = ['fixed acidity', 'volatile acidity', 'citric acid', 'residual sugar', 'free sulfure dioxide',
                           'density', 'pH', 'sulphates', 'alcohol']
         self.wine_weights = []
         for i in range(0, len(self.wine_data[0])):
             self.wine_weights.append(0.0)
         self.wine_weights = np.array(self.wine_weights, dtype=float)
-        # self.wine_data_interact =
+
 
         self.cancer_data = Preprocess.preprocessTumour()
         self.cancer_vars = ['']
@@ -33,6 +35,24 @@ class LogisticRegression:
         # print(1 / (1 + np.exp(-a)))
         return 1 / (1 + np.exp(-a))
 
+    @staticmethod
+    def interact(data_list):
+        list_out = []
+        for i in data_list:
+            temp = i[:-1]
+            # temp.app
+            # temp = np.append(temp, i[10]*i[11])   # 5,8;6,8;6,10;9,11;10,10;10,11
+            # temp = np.append(temp, i[5] * i[8])
+            # temp = np.append(temp, i[6] * i[8])
+            # temp = np.append(temp, i[6] * i[10])
+            # temp = np.append(temp, i[9] * i[11])
+            # temp = np.append(temp, i[10] * i[10])
+            # temp = np.append(temp, i[10] * i[11])
+
+            temp = np.append(temp, i[-1])
+            list_out.append(temp)
+        return np.array(list_out)
+
     def loss_fn(self):
         pass
 
@@ -43,7 +63,7 @@ class LogisticRegression:
 
     @staticmethod
     def learn_rate(iterations, data_length):
-        return 1/100_000_000_000_000
+        return 1/1_000_000_000_000
 
     # @staticmethod
     # def train(data, weights, iterations):
@@ -134,6 +154,7 @@ def k_fold_cancer(lr):
         # each iteration uses a different set of data
         learn = np.asarray(learn_l[i])
         test = np.asarray(test_l[i])
+
         lr.cancer_weights = LogisticRegression.fit(lr.cancer_weights, learn, LogisticRegression.learn_rate)
         y_act, y_pred = create_y_lists(test, lr.cancer_weights)
         print('CANCER: {}'.format(evaluate_acc(y_act, y_pred)))
@@ -144,6 +165,7 @@ def k_fold_cancer(lr):
 
 def k_fold_wine(lr):
     data_set = lr.wine_data
+    sum = 0
     k = 5
     learn_l, test_l = get_folds(lr, data_set, k)
     start_t = time.time_ns()
@@ -153,16 +175,21 @@ def k_fold_wine(lr):
         test = np.asarray(test_l[i])
         lr.wine_weights = LogisticRegression.fit(lr.wine_weights, learn, LogisticRegression.learn_rate)
         y_act, y_pred = create_y_lists(test, lr.wine_weights)
-        print('WINE: {}'.format(evaluate_acc(y_act, y_pred)))
+        ev = evaluate_acc(y_act, y_pred)
+        print('WINE: {}'.format(ev))
+        sum += ev
+        # print(lr.wine_weights)
     end_t = time.time_ns()
     total = end_t - start_t
     total = (total/5)/1_000_000_000
-    print('Average Time WINE: {}'.format(total))
+    avg = sum / k
+    print('AVG: {}'.format(avg))
+    # print('Average Time WINE: {}'.format(total))
 
 
 def main():
     lr = LogisticRegression()
-    k_fold_cancer(lr)
+    # k_fold_cancer(lr)
     k_fold_wine(lr)
     # y_act, y_pred = create_y_lists(lr.wine_data, lr.wine_weights)
     # print(evaluate_acc(y_act, y_pred))
