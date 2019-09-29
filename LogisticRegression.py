@@ -183,13 +183,13 @@ def k_fold_wine(lr):
     total = end_t - start_t
     total = (total/5)/1_000_000_000
     avg = sum / k
-    print('AVG: {}'.format(avg))
+    print('AVG Time WINE: {}'.format(avg))
     # print('Average Time WINE: {}'.format(total))
 
 
 def main():
     lr = LogisticRegression()
-    # k_fold_cancer(lr)
+    k_fold_cancer(lr)
     k_fold_wine(lr)
     # y_act, y_pred = create_y_lists(lr.wine_data, lr.wine_weights)
     # print(evaluate_acc(y_act, y_pred))
