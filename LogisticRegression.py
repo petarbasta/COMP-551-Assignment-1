@@ -11,7 +11,7 @@ class LogisticRegression:
     def __init__(self):
         self.wine_data = Preprocess.preprocessWine()
         self.wine_data_interact = LogisticRegression.interact(self.wine_data)
-        # self.wine_data = self.wine_data_interact
+        self.wine_data = self.wine_data_interact
         self.wine_vars = ['fixed acidity', 'volatile acidity', 'citric acid', 'residual sugar', 'free sulfure dioxide',
                           'density', 'pH', 'sulphates', 'alcohol']
         self.wine_weights = []
@@ -41,7 +41,7 @@ class LogisticRegression:
         for i in data_list:
             temp = i[:-1]
             # temp.app
-            # temp = np.append(temp, i[10]*i[11])   # 5,8;6,8;6,10;9,11;10,10;10,11
+            temp = np.append(temp, i[10]*i[11])   # 5,8;6,8;6,10;9,11;10,10;10,11
             # temp = np.append(temp, i[5] * i[8])
             # temp = np.append(temp, i[6] * i[8])
             # temp = np.append(temp, i[6] * i[10])
