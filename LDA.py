@@ -1,6 +1,7 @@
 import Preprocess
 import CrossValidate
 import numpy as np
+import time
 
 def fit(trainingSet, alpha=0):
 
@@ -75,8 +76,12 @@ for i in range(0,wineDataset.shape[1] - 1):
            newData.append(np.delete(row, i))
         newSet.append(np.array(newData))
 
+    start_t = time.time_ns()
     averageErrorWine = CrossValidate.kFoldCrossValidation(np.array(newSet), fit, predict, evaluate_acc)
-    print("Wine accuracy without (" + str(i) + "): " + str(averageErrorWine))
+    end_t = time.time_ns()
+    total = end_t - start_t
+    total = (total / 5) / 1_000_000_000
+    print("Wine accuracy without (" + str(i) + "): " + str(averageErrorWine) + "in " + str(format(total)) + " seconds.")
 
 # Testing with including the (i*j)th interaction term
 for i in range(0,wineDataset.shape[1] - 1):
@@ -91,12 +96,20 @@ for i in range(0,wineDataset.shape[1] - 1):
 
             newSet.append(np.array(newData))
 
+        start_t = time.time_ns()
         averageErrorWine = CrossValidate.kFoldCrossValidation(np.array(newSet), fit, predict, evaluate_acc)
-        print("Wine accuracy with (" + str(i) + "," + str(j) + "): " + str(averageErrorWine))
+        end_t = time.time_ns()
+        total = end_t - start_t
+        total = (total / 5) / 1_000_000_000
+        print("Wine accuracy with (" + str(i) + "," + str(j) + "): " + str(averageErrorWine) + "in " + str(format(total)) + " seconds.")
 
 # Testing wine with unmodified dataset
-averageErrorWine = CrossValidate.kFoldCrossValidation(wineDatasets, fit, predict, evaluate_acc)
-print("Wine accuracy: " + str(averageErrorWine))
+start_t = time.time_ns()
+averageErrorWine = CrossValidate.kFoldCrossValidation(np.array(wineDatasets), fit, predict, evaluate_acc)
+end_t = time.time_ns()
+total = end_t - start_t
+total = (total / 5) / 1_000_000_000
+print("Wine accuracy: " + str(averageErrorWine) + "in " + str(format(total)) + " seconds.")
 
 # Setting up tumor data
 tumourDataset = Preprocess.preprocessTumour()
@@ -112,8 +125,12 @@ for i in range(0,tumourDataset.shape[1] - 1):
            newData.append(np.delete(row, i))
         newSet.append(np.array(newData))
 
+    start_t = time.time_ns()
     averageErrorTumour = CrossValidate.kFoldCrossValidation(np.array(newSet), fit, predict, evaluate_acc)
-    print("Tumour accuracy without (" + str(i) + "): " + str(averageErrorTumour))
+    end_t = time.time_ns()
+    total = end_t - start_t
+    total = (total / 5) / 1_000_000_000
+    print("Tumour accuracy without (" + str(i) + "): " + str(averageErrorTumour) + "in " + str(format(total)) + " seconds.")
 
 # Testing tumors including the (i*j)th interaction term
 for i in range(0,tumourDataset.shape[1] - 1):
@@ -128,9 +145,17 @@ for i in range(0,tumourDataset.shape[1] - 1):
 
             newSet.append(np.array(newData))
 
+        start_t = time.time_ns()
         averageErrorTumour = CrossValidate.kFoldCrossValidation(np.array(newSet), fit, predict, evaluate_acc)
-        print("Tumor accuracy with (" + str(i) + "," + str(j) + "): " + str(averageErrorTumour))
+        end_t = time.time_ns()
+        total = end_t - start_t
+        total = (total / 5) / 1_000_000_000
+        print("Tumor accuracy with (" + str(i) + "," + str(j) + "): " + str(averageErrorTumour) + "in " + str(format(total)) + " seconds.")
 
 # Testing unmodified tumor data set
-averageErrorTumour = CrossValidate.kFoldCrossValidation(tumourDatasets, fit, predict, evaluate_acc)
-print("Tumor accuracy: " + str(averageErrorTumour))
+start_t = time.time_ns()
+averageErrorTumour = CrossValidate.kFoldCrossValidation(np.array(tumourDatasets), fit, predict, evaluate_acc)
+end_t = time.time_ns()
+total = end_t - start_t
+total = (total / 5) / 1_000_000_000
+print("Tumor accuracy: " + str(averageErrorTumour) + "in " + str(format(total)) + " seconds.")
